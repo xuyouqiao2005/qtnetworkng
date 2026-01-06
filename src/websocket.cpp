@@ -996,9 +996,9 @@ bool WebSocketConnectionPrivate::recvBytes(QByteArray &buf, int &usedSize)
 bool WebSocketConnectionPrivate::sendBytes(const QByteArray &packet)
 {
     ScopedLock<Lock> locklock(writeLock);
-    if (debugLevel >= 3) {
+    if (debugLevel >= 2) {
         qtng_debug << "sending packet:" << packet;
-    } else if (debugLevel >= 2) {
+    } else if (debugLevel >= 1) {
         qtng_debug << "sending packet:" << packet.size();
     }
     qint32 sentBytes;
