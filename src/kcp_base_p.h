@@ -224,6 +224,14 @@ void KcpBase<Link>::setMode(KcpMode mode)
         kcp->rx_minrto = 30;
         // kcp->interval = 5;
         break;
+    case KcpMode::AsymmetricInternet:
+        waterLine = 256;
+        ikcp_nodelay(kcp, 1, 10, 1, 0);
+        ikcp_setmtu(kcp, 1400);
+        ikcp_wndsize(kcp, 1024, 1024);
+        kcp->rx_minrto = 30;
+        // kcp->interval = 5;
+        break;
     case KcpMode::FastInternet:
         waterLine = 192;
         ikcp_nodelay(kcp, 1, 10, 1, 1);
