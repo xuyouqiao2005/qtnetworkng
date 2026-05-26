@@ -831,15 +831,14 @@ bool MasterKcpBase<Link>::close(bool force)
         }
     } else if (this->state == Socket::ListeningState) {
         this->state = Socket::UnconnectedState;
-        QMap<LinkPathID, QWeakPointer<class SlaveKcpBase<Link>>> receiversByLinkPathID(
-                this->receiversByLinkPathID);
+        QMap<LinkPathID, QWeakPointer<class SlaveKcpBase<Link>>> receiversByLinkPathID(this->receiversByLinkPathID);
         this->receiversByLinkPathID.clear();
-        for (QWeakPointer<SlaveKcpBase<Link>> receiverPtr : receiversByLinkPathID) {
+        CoroutineGroup::each<QWeakPointer<SlaveKcpBase<Link>>>([force](QWeakPointer<SlaveKcpBase<Link>> receiverPtr) {
             if (!receiverPtr.isNull()) {
                 QSharedPointer<SlaveKcpBase<Link>> receiver = receiverPtr;
                 receiver->close(force);
             }
-        }
+        }, receiversByLinkPathID.values(), 10);
         receiversByConnectionId.clear();
     } else {  // BoundState
         this->state = Socket::UnconnectedState;
@@ -1164,7 +1163,7 @@ bool SlaveKcpBase<Link>::close(bool force)
         if (!force && this->error == Socket::NoError) {
             if (!this->sendingQueueEmpty.isSet()) {
                 this->updateKcp();
-                if (!this->sendingQueueEmpty.tryWait()) {
+                if (!this->sendingQueueEmpty.tryWait(3000)) {
                     return false;
                 }
             }
