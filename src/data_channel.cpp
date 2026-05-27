@@ -576,7 +576,7 @@ SocketChannelPrivate::SocketChannelPrivate(QSharedPointer<SocketLike> connection
     , keepaliveInterval(1000 * 2)
 {
     // connection->setOption(Socket::LowDelayOption, true);
-    connection->setOption(Socket::KeepAliveOption, false);  // we do it!
+    // connection->setOption(Socket::KeepAliveOption, false);  // we do it!
     operations->spawnWithName(QString::fromLatin1("receiving"), [this] { this->doReceive(); });
     operations->spawnWithName(QString::fromLatin1("sending"), [this] { this->doSend(); });
     operations->spawnWithName(QString::fromLatin1("keepalive"), [this] { this->doKeepalive(); });
