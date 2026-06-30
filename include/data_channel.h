@@ -90,6 +90,8 @@ public:
     float keepaliveInterval() const;
     quint32 sendingQueueSize() const;
     QSharedPointer<SocketLike> connection() const;
+    quint32 protocolVersion() const;
+    bool negotiateProtocolVersion();
 private:
     Q_DECLARE_PRIVATE(SocketChannel)
 };
@@ -101,7 +103,7 @@ class VirtualChannel : public DataChannel
 public:
     quint32 channelNumber() const;
 protected:
-    VirtualChannel(DataChannel *parentChannel, DataChannelPole pole, quint32 channelNumber);
+    VirtualChannel(DataChannel *parentChannel, DataChannelPole pole, quint32 channelNumber, bool flatRouting = false);
 private:
     Q_DECLARE_PRIVATE(VirtualChannel)
     friend class DataChannelPrivate;
